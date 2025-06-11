@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Modern Software Engineering: Coupling & Engineering Tools</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+	<style>
+		:root {
+			--primary: #4da6ff;
+			--secondary: #ff6b6b;
+			--accent: #6bff8f;
+		}
+		.reveal {
+			background: #000;
+			color: #eee;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+		.reveal h1, .reveal h2 {
+			color: var(--primary);
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-bottom: 20px;
+		}
+		.reveal h3 {
+			color: var(--accent);
+			margin-bottom: 15px;
+		}
+		.reveal p, .reveal li {
+			font-size: 24px;
+			line-height: 1.3;
+		}
+		.reveal ul {
+			width: 90%;
+			margin-left: 5%;
+		}
+		.reveal li {
+			margin: 10px 0;
+		}
+		.section-card {
+			background: rgba(30, 30, 40, 0.7);
+			border-radius: 10px;
+			padding: 20px;
+			margin: 15px auto;
+			max-width: 95%;
+			box-shadow: 0 0 30px rgba(77, 166, 255, 0.2);
+			max-height: 75vh;
+			overflow-y: auto;
+		}
+		.concept-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 15px;
+			margin: 20px 0;
+		}
+		.concept-card {
+			background: rgba(50, 50, 70, 0.6);
+			padding: 15px;
+			border-radius: 8px;
+			border-left: 4px solid var(--primary);
+		}
+		.problem-solution {
+			display: flex;
+			margin: 20px 0;
+		}
+		.problem, .solution {
+			padding: 15px;
+			border-radius: 8px;
+			width: 48%;
+		}
+		.problem {
+			background: rgba(200, 50, 50, 0.15);
+			border: 2px solid var(--secondary);
+			margin-right: 4%;
+		}
+		.solution {
+			background: rgba(50, 200, 50, 0.15);
+			border: 2px solid var(--accent);
+		}
+		.cycle {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 30px 0;
+			flex-wrap: wrap;
+		}
+		.cycle-step {
+			background: var(--primary);
+			color: #000;
+			padding: 12px 20px;
+			margin: 8px;
+			border-radius: 5px;
+			font-weight: bold;
+			min-width: 100px;
+			text-align: center;
+			font-size: 20px;
+		}
+		.connector {
+			color: var(--primary);
+			font-size: 1.5em;
+			margin: 0 5px;
+		}
+		.key-insight {
+			background: rgba(255, 215, 0, 0.15);
+			border: 2px solid #ffd700;
+			padding: 15px;
+			border-radius: 8px;
+			margin: 20px 0;
+			font-size: 22px;
+		}
+		.highlight {
+			color: var(--secondary);
+			font-weight: bold;
+		}
+		.success {
+			color: var(--accent);
+			font-weight: bold;
+		}
+		.full-height {
+			min-height: 60vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.book-quote {
+			font-style: italic;
+			color: #aaa;
+			margin-top: 30px;
+			border-left: 3px solid var(--primary);
+			padding-left: 15px;
+			font-size: 22px;
+		}
+
+		@media (max-height: 700px) {
+			.reveal p, .reveal li {
+				font-size: 22px;
+			}
+			.key-insight {
+				font-size: 20px;
+			}
+			.full-height {
+				min-height: 55vh;
+			}
+			.concept-grid {
+				grid-template-columns: 1fr;
+				gap: 10px;
+			}
+		}
+
+		.section-card::-webkit-scrollbar {
+			width: 8px;
+		}
+		.section-card::-webkit-scrollbar-track {
+			background: rgba(30, 30, 40, 0.3);
+		}
+		.section-card::-webkit-scrollbar-thumb {
+			background: var(--primary);
+			border-radius: 4px;
+		}
+
+		.reveal .slide-number {
+			font-size: 18px;
+			color: var(--primary);
+			background: rgba(0,0,0,0.5);
+			padding: 5px 10px;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body>
+<div class="reveal">
+	<div class="slides">
+		<!-- 1. Title Slide -->
+		<section>
+			<div class="full-height">
+				<h1>Engineering at Scale</h1>
+				<h3>Managing Coupling & Essential Tools</h3>
+				<p>David Farley's Modern Software Engineering</p>
+				<p style="margin-top: 30px; color: var(--primary);">Chapters 13 & 14</p>
+				<div class="book-quote">
+					"The only way to go fast is to go well" - Robert C. Martin
+				</div>
+			</div>
+		</section>
+
+		<!-- 2. The Coupling Challenge -->
+		<section>
+			<div class="full-height">
+				<h2>The Coupling Challenge</h2>
+				<div class="section-card">
+					<h3>What is Coupling?</h3>
+					<ul>
+						<li>Degree of <span class="highlight">interdependence</span> between components</li>
+						<li>Essential for communication but must be managed</li>
+						<li>Not about elimination - about <span class="success">intentional design</span></li>
+					</ul>
+
+					<div class="problem-solution">
+						<div class="problem">
+							<h4>Tight Coupling</h4>
+							<ul>
+								<li>Rigid structures</li>
+								<li>Change propagation</li>
+								<li>Coordination overhead</li>
+							</ul>
+						</div>
+						<div class="solution">
+							<h4>Loose Coupling</h4>
+							<ul>
+								<li>Flexible interfaces</li>
+								<li>Independent evolution</li>
+								<li>Team autonomy</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 3. Why Coupling Matters -->
+		<section>
+			<div class="full-height">
+				<h2>Why Coupling Matters</h2>
+				<div class="section-card">
+					<div class="concept-grid">
+						<div class="concept-card">
+							<h4>Speed</h4>
+							<p>How quickly can teams deliver value?</p>
+						</div>
+						<div class="concept-card">
+							<h4>Reliability</h4>
+							<p>Predictability of system behavior</p>
+						</div>
+						<div class="concept-card">
+							<h4>Scalability</h4>
+							<p>Ability to grow teams and systems</p>
+						</div>
+						<div class="concept-card">
+							<h4>Maintainability</h4>
+							<p>Cost of changes over time</p>
+						</div>
+					</div>
+
+					<div class="key-insight">
+						<p class="highlight">"Big Ball of Mud" anti-pattern emerges when coupling is ignored</p>
+						<p>Brooks' Law: Adding people to coupled systems increases delivery time</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 4. Scaling Strategies -->
+		<section>
+			<div class="full-height">
+				<h2>Scaling Strategies</h2>
+				<div class="section-card">
+					<div class="problem-solution">
+						<div class="problem">
+							<h4>Coordinated Approach</h4>
+							<ul>
+								<li>Shared codebase</li>
+								<li>Continuous Integration</li>
+								<li>Fast feedback loops</li>
+								<li>Heavy automation</li>
+							</ul>
+						</div>
+						<div class="solution">
+							<h4>Distributed Approach</h4>
+							<ul>
+								<li>Decoupled systems</li>
+								<li>Microservices architecture</li>
+								<li>Independent deployability</li>
+								<li>Team ownership</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="key-insight">
+						<p>Microservices are primarily an <span class="success">organizational scaling pattern</span></p>
+						<p>Key benefit: <span class="highlight">Independent deployability</span></p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 5. Coupling Nuances -->
+		<section>
+			<div class="full-height">
+				<h2>Coupling Nuances</h2>
+				<div class="section-card">
+					<h3>DRY Principle Reconsidered</h3>
+					<ul>
+						<li><span class="success">Within</span> bounded contexts: Essential</li>
+						<li><span class="highlight">Between</span> services: Dangerous</li>
+						<li>Cost of coupling > Cost of duplication</li>
+					</ul>
+
+					<h3 style="margin-top: 20px;">Communication Patterns</h3>
+					<ul>
+						<li>Synchronous: Simpler but creates runtime coupling</li>
+						<li>Asynchronous: More resilient but complex</li>
+					</ul>
+
+					<div class="key-insight">
+						<p>Testability as a compass: Hard-to-test code often indicates problematic coupling</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 6. Engineering Tools -->
+		<section>
+			<div class="full-height">
+				<h2>Engineering Tools</h2>
+				<div class="section-card">
+					<h3>Focus on Outcomes</h3>
+					<p>Better software • Faster delivery • Sustainable process</p>
+
+					<div class="concept-grid" style="margin-top: 20px;">
+						<div class="concept-card">
+							<h4>🧪 Testability</h4>
+							<p>Foundation of quality</p>
+						</div>
+						<div class="concept-card">
+							<h4>🚀 Deployability</h4>
+							<p>Always releasable</p>
+						</div>
+						<div class="concept-card">
+							<h4>⚡ Speed</h4>
+							<p>Accelerated learning</p>
+						</div>
+						<div class="concept-card">
+							<h4>🎛️ Control</h4>
+							<p>Deterministic outcomes</p>
+						</div>
+					</div>
+
+					<div class="key-insight">
+						<p>These tools are interconnected and mutually reinforcing</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 7. Testability Deep Dive -->
+		<section>
+			<div class="full-height">
+				<h2>Testability as Design</h2>
+				<div class="section-card">
+					<div class="problem-solution">
+						<div class="problem">
+							<h4>The Challenge</h4>
+							<ul>
+								<li>Human error is inevitable</li>
+								<li>Manual testing is slow</li>
+								<li>Late feedback is expensive</li>
+							</ul>
+						</div>
+						<div class="solution">
+							<h4>The Solution</h4>
+							<ul>
+								<li>Design for testability</li>
+								<li>Create measurement points</li>
+								<li>Abstract system edges</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="key-insight">
+						<h3>TDD: Test-Driven Development</h3>
+						<p>Not testing - but <span class="success">design technique</span></p>
+						<p>Red → Green → Refactor cycle</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 8. Deployability & Speed -->
+		<section>
+			<div class="full-height">
+				<h2>Deployability & Speed</h2>
+				<div class="section-card">
+					<h3>Core Principle</h3>
+					<p class="success">Always in Releasable State</p>
+
+					<h3 style="margin-top: 20px;">Deployment Pipeline</h3>
+					<ul>
+						<li>Automated verification</li>
+						<li>Scope: Independently deployable unit</li>
+						<li>Monolith vs Microservices implications</li>
+					</ul>
+
+					<div class="key-insight" style="margin-top: 20px;">
+						<h3>Speed as Fitness Function</h3>
+						<p>Target: <span class="highlight">Deployable within 1 hour</span></p>
+						<p>Forces good practices: Small teams, automation, good architecture</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 9. Controlling Variables -->
+		<section>
+			<div class="full-height">
+				<h2>Controlling Variables</h2>
+				<div class="section-card">
+					<h3>Why It Matters</h3>
+					<ul>
+						<li>Reliable testing</li>
+						<li>Repeatable deployments</li>
+						<li>Deterministic systems</li>
+					</ul>
+
+					<h3 style="margin-top: 20px;">Implementation</h3>
+					<ul>
+						<li>Automation everywhere</li>
+						<li>Abstraction layers</li>
+						<li>Environment management</li>
+						<li>Limited concurrency scope</li>
+					</ul>
+
+					<div class="key-insight">
+						<p>Design choices that enable control also enable better architecture</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 10. Continuous Delivery -->
+		<section>
+			<div class="full-height">
+				<h2>Continuous Delivery</h2>
+				<div class="section-card">
+					<h3>The Unifying Philosophy</h3>
+
+					<div class="cycle">
+						<div class="cycle-step">Testability</div>
+						<div class="connector">↔</div>
+						<div class="cycle-step">Deployability</div>
+						<div class="connector">↔</div>
+						<div class="cycle-step">Speed</div>
+						<div class="connector">↔</div>
+						<div class="cycle-step">Control</div>
+					</div>
+
+					<div class="key-insight" style="margin-top: 20px;">
+						<h3>CD Enables</h3>
+						<ul>
+							<li>Modular organization</li>
+							<li>Team autonomy</li>
+							<li>Rapid experimentation</li>
+							<li>Quality feedback loops</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 11. Chapter Synthesis -->
+		<section>
+			<div class="full-height">
+				<h2>Connecting the Concepts</h2>
+				<div class="section-card">
+					<div class="concept-grid">
+						<div class="concept-card">
+							<h4>Coupling Management</h4>
+							<p>Enables team scaling and independent deployability</p>
+						</div>
+						<div class="concept-card">
+							<h4>Testability</h4>
+							<p>Reveals coupling problems and enables speed</p>
+						</div>
+						<div class="concept-card">
+							<h4>Deployability</h4>
+							<p>Requires controlled coupling and variables</p>
+						</div>
+						<div class="concept-card">
+							<h4>Speed</h4>
+							<p>The ultimate measure of engineering maturity</p>
+						</div>
+					</div>
+
+					<div class="key-insight">
+						<p>These principles form a <span class="success">virtuous cycle</span> when implemented together</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 12. Closing -->
+		<section>
+			<div class="full-height">
+				<h1>Engineering Excellence</h1>
+				<div class="section-card">
+					<h3>IN CONCLUSION:</h3>
+					<ul>
+						<li>Coupling management enables scaling</li>
+						<li>Testability drives good design</li>
+						<li>Speed is both outcome and enabler</li>
+						<li>CD unifies engineering practices</li>
+					</ul>
+
+					<div class="book-quote">
+						"The job of software engineering is not to build software,
+						but to build systems that can build software" - David Farley
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+<script>
+	Reveal.initialize({
+		hash: true,
+		controls: true,
+		progress: true,
+		center: true,
+		transition: 'slide',
+		transitionSpeed: 'default',
+		backgroundTransition: 'fade',
+		margin: 0.05,
+		width: '90%',
+		slideNumber: true
+	});
+</script>
+</body>
+</html>
